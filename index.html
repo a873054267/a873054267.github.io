@@ -1,0 +1,40 @@
+if(this.state.selIndex == -1){
+        var obj = geomapWrapped.map.viewer.scene.pick(event.position);
+        if(obj && obj.id && obj.id.attr&&obj.id.attr._category =="measure"){
+          if(obj.id.polygon){
+            this.lastOBJColor = obj.id.polygon.material.color;
+            this.lastHighLightOBJ = obj.id;
+            obj.id.polygon.material.color = new BOSGeo.Color(1.0,.0,.0,0.5);
+          }
+          else if(obj.id.polyline){
+            let list = this.getEntityById(obj.id.attr.id);
+           if(list){
+             this.lastHighLightOBJ = list;
+             this.lastOBJColor = obj.id.polyline.material.color;
+             list.map(v => {
+               v.polyline.material.color = new BOSGeo.Color(1.0,.0,.0,0.5)
+             })
+           }
+          }
+
+        }
+        else{
+
+          //还原上次高亮的对象
+          if(this.lastHighLightOBJ){
+            if(this.lastHighLightOBJ[0]){
+              this.lastHighLightOBJ.map(v => {
+                v.polyline.material.color = this.lastOBJColor;
+              })
+            }
+            else{
+              this.lastHighLightOBJ.polygon.material.color = this.lastOBJColor;
+              this.lastHighLightOBJ = null;
+            }
+
+            this.lastHighLightOBJ = null;
+            this.lastOBJColor = null;
+
+          }
+        }
+      }
